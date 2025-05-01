@@ -1,0 +1,29 @@
+import { Injectable } from '@nestjs/common';
+import { CreateQuestionDto } from './dto/create-question.dto';
+import { UpdateQuestionDto } from './dto/update-question.dto';
+import { QuestionRepository } from './prisma/question.repository';
+
+@Injectable()
+export class QuestionsService {
+  constructor(private readonly questionRepository: QuestionRepository) {}
+
+  async create(createQuestionDto: CreateQuestionDto) {
+    return this.questionRepository.create(createQuestionDto);
+  }
+
+  async findAll() {
+    return this.questionRepository.findAll();
+  }
+
+  async findOne(id: string) {
+    return this.questionRepository.findById(id);
+  }
+
+  async update(id: string, updateQuestionDto: UpdateQuestionDto) {
+    return this.questionRepository.update(id, updateQuestionDto);
+  }
+
+  async remove(id: string) {
+    return this.questionRepository.delete(id);
+  }
+}
