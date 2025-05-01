@@ -42,4 +42,18 @@ export class UsersService {
       );
     }
   }
+
+  async findById(userId: string) {
+    try {
+      const user = await this.userRepository.findById(userId);
+      if (!user) {
+        throw new NotFoundException('User not found');
+      }
+      return user;
+    } catch (error) {
+      throw new InternalServerErrorException(
+        'An error occurred while retrieving the user',
+      );
+    }
+  }
 }
