@@ -41,4 +41,14 @@ export class AuthController {
   login(@Body() dto: LoginAuthDto) {
     return this.authService.login(dto);
   }
+
+  @ApiOperation({ summary: 'Logout user' })
+  @ApiOkResponse({ description: 'Logout successfully' })
+  @HttpCode(200)
+  @Post('/logout')
+  async logout() {
+    return {
+      message: 'User logout successfully',
+    };
+  }
 }
