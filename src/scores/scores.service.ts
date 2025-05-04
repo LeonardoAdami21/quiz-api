@@ -5,6 +5,7 @@ import {
   Inject,
   Injectable,
   InternalServerErrorException,
+  NotFoundException,
 } from '@nestjs/common';
 import { CreateScoreDto } from './dto/create-score.dto';
 import { UpdateScoreDto } from './dto/update-score.dto';
@@ -20,12 +21,8 @@ export class ScoresService {
   async create(dto: CreateScoreDto, userId: string) {
     try {
       const user = await this.usersService.findById(userId);
-      const { value } = dto;
-      if (!value) {
-        throw new BadRequestException('Invalid data provided');
-      }
-      if (value < 0 || value > 100) {
-        throw new ConflictException('Invalid data provided');
+      if (!user) {
+        throw new NotFoundException('User not found');
       }
       const score = await this.scoreRepository.create(dto, userId);
       return score;
@@ -40,6 +37,19 @@ export class ScoresService {
   async findAll() {
     try {
       const questions = await this.scoreRepository.findAll();
+      return questions;
+    } catch (error) {
+      throw new InternalServerErrorException(
+        'An error occurred while retrieving questions',
+      );
+    }
+  }
+
+  async findAllToScoreByUser(userId: string) {
+    try {
+      const questions = await this.scoreRepository.findAllToScoreByUser(
+        userId,
+      );
       return questions;
     } catch (error) {
       throw new InternalServerErrorException(

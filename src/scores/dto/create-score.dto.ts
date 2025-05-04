@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsNumber } from 'class-validator';
+import { IsNotEmpty, IsNumber, Max, Min } from 'class-validator';
 
 export class CreateScoreDto {
   @ApiProperty({
@@ -9,6 +9,5 @@ export class CreateScoreDto {
     type: Number,
   })
   @IsNumber()
-  @IsNotEmpty()
   value: number;
 }

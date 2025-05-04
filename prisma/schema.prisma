@@ -28,7 +28,7 @@ model Question {
   id            String   @id @default(uuid())
   text          String
   options       String[] // ["A", "B", "C", "D"]
-  correctAnswer String
+  correctIndex  Int
   category      String?
   createdAt     DateTime @default(now())
 }

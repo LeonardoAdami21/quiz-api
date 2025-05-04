@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { IsInt, IsNotEmpty, IsNumber, IsOptional, IsString, Max, Min } from 'class-validator';
 
 export class CreateQuestionDto {
   @ApiProperty({
@@ -7,26 +8,32 @@ export class CreateQuestionDto {
     required: true,
     type: String,
   })
+  @IsString()
+  @IsNotEmpty()
   text: string;
 
   @ApiProperty({
-    example: 'John Doe',
-    description: 'Question correct answer',
+    example: 1,
+    description: 'Correct answer index',
     required: true,
-    type: String,
+    type: Number,
   })
-  correctAnswer: string;
+  @IsInt()
+  @IsNumber()
+  @Min(0)
+  @Max(3)
+  correctIndex: number;
 
   @ApiProperty({
     example: ['A', 'B', 'C', 'D'],
     description: 'Question answers',
     required: true,
-    type: [String],
+    type: Array,
   })
   options: string[];
 
   @ApiProperty({
-    example: 'General Knowledge',
+    example: 'Math',
     description: 'Question category',
     required: false,
     type: String,
