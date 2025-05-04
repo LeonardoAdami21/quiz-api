@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { CreateQuestionDto } from './dto/create-question.dto';
 import { UpdateQuestionDto } from './dto/update-question.dto';
 import { QuestionRepository } from './prisma/question.repository';
@@ -7,8 +7,19 @@ import { QuestionRepository } from './prisma/question.repository';
 export class QuestionsService {
   constructor(private readonly questionRepository: QuestionRepository) {}
 
-  async create(createQuestionDto: CreateQuestionDto) {
-    return this.questionRepository.create(createQuestionDto);
+  async create(dto: CreateQuestionDto) {
+    try {
+      const { correctIndex, ...rest } = dto;
+      const correctIndexNumber = Number(correctIndex);
+
+      const question = await this.questionRepository.create({
+        ...rest,
+        correctIndex: correctIndexNumber,
+      });
+      return question;
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
   }
 
   async findAll() {

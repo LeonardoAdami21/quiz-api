@@ -19,7 +19,7 @@ CREATE TABLE "Question" (
     "id" TEXT NOT NULL,
     "text" TEXT NOT NULL,
     "options" TEXT[],
-    "correctAnswer" TEXT NOT NULL,
+    "correctIndex" INTEGER NOT NULL,
     "category" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
