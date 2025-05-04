@@ -24,6 +24,9 @@ export class ScoreRepository {
   async create(dto: CreateScoreDto, userId: string) {
     try {
       const user = await this.usersService.findById(userId);
+      if (!user) {
+        throw new NotFoundException('User not found');
+      }
       const { value } = dto;
       if (!value) {
         throw new BadRequestException('Invalid data provided');
@@ -36,7 +39,7 @@ export class ScoreRepository {
           ...dto,
           user: {
             connect: {
-              id: user.id,
+              id: userId,
             },
           },
         },
@@ -53,6 +56,26 @@ export class ScoreRepository {
   async findAll() {
     try {
       const questions = await this.scoreRepository.findMany();
+      return questions;
+    } catch (error) {
+      throw new InternalServerErrorException(
+        'An error occurred while retrieving questions',
+      );
+    }
+  }
+
+  async findAllToScoreByUser(userId: string) {
+    try {
+      const questions = await this.scoreRepository.findFirst({
+        where: {
+          user: {
+            id: userId,
+          },
+        },
+      });
+      if (!questions) {
+        throw new NotFoundException('Questions not found');
+      }
       return questions;
     } catch (error) {
       throw new InternalServerErrorException(

@@ -1,8 +1,17 @@
-import { Body, Controller, Get, Param, Post, Req } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { CreateScoreDto } from './dto/create-score.dto';
 import { ScoresService } from './scores.service';
 import { Request } from 'express';
 import {
+  ApiBearerAuth,
   ApiCreatedResponse,
   ApiInternalServerErrorResponse,
   ApiNotFoundResponse,
@@ -12,12 +21,15 @@ import {
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
+import { JwtAuthGuard } from 'src/jwt/jwt.guard';
 
 @Controller('v2/scores')
+@ApiBearerAuth()
 @ApiTags('Scores')
 export class ScoresController {
   constructor(private readonly scoresService: ScoresService) {}
 
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Set user score' })
   @ApiCreatedResponse({
     description: 'The record has been successfully created.',
@@ -27,9 +39,11 @@ export class ScoresController {
   @ApiInternalServerErrorResponse({ description: 'Internal server error' })
   @Post()
   create(@Body() createScoreDto: CreateScoreDto, @Req() req: Request) {
-    return this.scoresService.create(createScoreDto, req.user.id);
+    const formattedValue = +(createScoreDto.value);
+    return this.scoresService.create({ value: formattedValue }, req.user.id);
   }
 
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Get top scores' })
   @ApiOkResponse({ description: 'Return all top scores' })
   @ApiNotFoundResponse({ description: 'User not found' })
@@ -40,6 +54,17 @@ export class ScoresController {
     return this.scoresService.findAll();
   }
 
+  @ApiOperation({ summary: 'Get top scores by user id' })
+  @ApiOkResponse({ description: 'Return all top scores' })
+  @ApiNotFoundResponse({ description: 'User not found' })
+  @ApiUnauthorizedResponse({ description: 'Unauthorized' })
+  @ApiInternalServerErrorResponse({ description: 'Internal server error' })
+  @Get('/user')
+  findAllToScoreByUser(@Req() req: Request) {
+    return this.scoresService.findAllToScoreByUser(req.user.id);
+  }
+
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Get top scores' })
   @ApiOkResponse({ description: 'Return all top scores' })
   @ApiNotFoundResponse({ description: 'User not found' })

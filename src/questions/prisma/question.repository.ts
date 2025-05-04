@@ -21,20 +21,21 @@ export class QuestionRepository {
 
   async create(dto: CreateQuestionDto) {
     try {
-      const { text, correctAnswer, options, category } = dto;
-      if (!text || !correctAnswer || !options) {
+      const { text, correctIndex, options, category } = dto;
+      if (!text || !correctIndex || !options) {
         throw new BadRequestException('Invalid data provided');
       }
       const question = await this.questionRepository.create({
         data: {
           text,
-          correctAnswer,
+          correctIndex,
           options,
-          category,
+          category
         },
       });
       return question;
     } catch (error) {
+      console.log(error);
       throw new InternalServerErrorException(
         'An error occurred while creating the question',
         error,
