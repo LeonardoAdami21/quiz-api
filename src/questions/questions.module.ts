@@ -9,6 +9,6 @@ import { JwtService } from '@nestjs/jwt';
 @Module({
   imports: [PrismaConfigModule],
   controllers: [QuestionsController],
-  providers: [QuestionsService, JwtService, ...questionsProvider, QuestionRepository],
+  providers: [QuestionsService, ...questionsProvider, QuestionRepository],
 })
 export class QuestionsModule {}
