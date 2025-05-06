@@ -10,6 +10,6 @@ import { JwtService } from '@nestjs/jwt';
 @Module({
   imports: [PrismaConfigModule, forwardRef(() => UsersModule)],
   controllers: [ScoresController],
-  providers: [ScoresService, JwtService, ...scoresProvider, ScoreRepository],
+  providers: [ScoresService, ...scoresProvider, ScoreRepository],
 })
 export class ScoresModule {}
