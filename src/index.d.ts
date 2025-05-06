@@ -3,7 +3,7 @@ declare namespace Express {
     user: {
       id: string;
       email: string;
-      role: string;
+      roles: string;
       password: string;
       name: string;
       score?: string[];

@@ -23,7 +23,9 @@ import {
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
-import { JwtAuthGuard } from 'src/jwt/jwt.guard';
+import { JwtAuthGuard } from 'src/auth/jwt/jwt.guard';
+import { RolesGuard } from 'src/auth/jwt/roles.guard';
+import { Roles } from 'src/decorators/roles.decorator';
 
 @Controller('v2/questions')
 @ApiBearerAuth()
@@ -31,7 +33,8 @@ import { JwtAuthGuard } from 'src/jwt/jwt.guard';
 export class QuestionsController {
   constructor(private readonly questionsService: QuestionsService) {}
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(['ADMIN'])
   @ApiOperation({ summary: 'Create question' })
   @ApiCreatedResponse({ description: 'Question created successfully' })
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
@@ -44,7 +47,8 @@ export class QuestionsController {
     return this.questionsService.create(dto);
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(['ADMIN'])
   @ApiOperation({ summary: 'Get all questions' })
   @ApiOkResponse({ description: 'Questions found successfully' })
   @ApiInternalServerErrorResponse({
@@ -55,7 +59,8 @@ export class QuestionsController {
     return this.questionsService.findAll();
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(['ADMIN'])
   @ApiOperation({ summary: 'Get question by id' })
   @ApiOkResponse({ description: 'Question found successfully' })
   @ApiNotFoundResponse({ description: 'Question not found' })
@@ -67,7 +72,8 @@ export class QuestionsController {
     return this.questionsService.findOne(id);
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(['ADMIN'])
   @ApiOperation({ summary: 'Update question by id' })
   @ApiOkResponse({ description: 'Question updated successfully' })
   @ApiNotFoundResponse({ description: 'Question not found' })
@@ -82,7 +88,8 @@ export class QuestionsController {
     return this.questionsService.update(id, updateQuestionDto);
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(['ADMIN'])
   @ApiOperation({ summary: 'Delete question by id' })
   @ApiOkResponse({ description: 'Question deleted successfully' })
   @ApiNotFoundResponse({ description: 'Question not found' })

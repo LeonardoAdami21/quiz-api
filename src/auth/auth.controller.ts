@@ -1,7 +1,15 @@
-import { Body, Controller, HttpCode, HttpStatus, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  HttpCode,
+  HttpStatus,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import {
   ApiBadRequestResponse,
+  ApiBearerAuth,
   ApiCreatedResponse,
   ApiInternalServerErrorResponse,
   ApiOkResponse,
@@ -11,7 +19,8 @@ import {
 import { RegisterAuthDto } from './dto/register.auth-dto';
 import { Public } from '../decorators/public.decorator';
 import { LoginAuthDto } from './dto/login.auth-dto';
-import { JwtAuthGuard } from 'src/jwt/jwt.guard';
+import { JwtAuthGuard } from 'src/auth/jwt/jwt.guard';
+import { RolesGuard } from 'src/auth/jwt/roles.guard';
 
 @Controller('v2/auth')
 @ApiTags('Authentication and Authorization')
@@ -43,9 +52,13 @@ export class AuthController {
     return this.authService.login(dto);
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Logout user' })
   @ApiOkResponse({ description: 'Logout successfully' })
+  @ApiInternalServerErrorResponse({
+    description: 'An error occurred while logout',
+  })
   @HttpCode(200)
   @Post('/logout')
   async logout() {
