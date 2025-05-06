@@ -21,7 +21,9 @@ import {
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
-import { JwtAuthGuard } from 'src/jwt/jwt.guard';
+import { JwtAuthGuard } from 'src/auth/jwt/jwt.guard';
+import { RolesGuard } from 'src/auth/jwt/roles.guard';
+import { Roles } from 'src/decorators/roles.decorator';
 
 @Controller('v2/scores')
 @ApiBearerAuth()
@@ -29,7 +31,8 @@ import { JwtAuthGuard } from 'src/jwt/jwt.guard';
 export class ScoresController {
   constructor(private readonly scoresService: ScoresService) {}
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(['ADMIN', 'USER'])
   @ApiOperation({ summary: 'Set user score' })
   @ApiCreatedResponse({
     description: 'The record has been successfully created.',
@@ -39,11 +42,12 @@ export class ScoresController {
   @ApiInternalServerErrorResponse({ description: 'Internal server error' })
   @Post()
   create(@Body() createScoreDto: CreateScoreDto, @Req() req: Request) {
-    const formattedValue = +(createScoreDto.value);
+    const formattedValue = +createScoreDto.value;
     return this.scoresService.create({ value: formattedValue }, req.user.id);
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(['ADMIN', 'USER'])
   @ApiOperation({ summary: 'Get top scores' })
   @ApiOkResponse({ description: 'Return all top scores' })
   @ApiNotFoundResponse({ description: 'User not found' })
@@ -54,6 +58,8 @@ export class ScoresController {
     return this.scoresService.findAll();
   }
 
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(['ADMIN', 'USER'])
   @ApiOperation({ summary: 'Get top scores by user id' })
   @ApiOkResponse({ description: 'Return all top scores' })
   @ApiNotFoundResponse({ description: 'User not found' })
@@ -64,7 +70,8 @@ export class ScoresController {
     return this.scoresService.findAllToScoreByUser(req.user.id);
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(['ADMIN', 'USER'])
   @ApiOperation({ summary: 'Get top scores' })
   @ApiOkResponse({ description: 'Return all top scores' })
   @ApiNotFoundResponse({ description: 'User not found' })
