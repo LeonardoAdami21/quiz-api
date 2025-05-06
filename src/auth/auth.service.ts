@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ConflictException,
   forwardRef,
   Inject,
   Injectable,
@@ -10,6 +11,8 @@ import { JwtService } from '@nestjs/jwt';
 import * as argon2 from 'argon2';
 import { RegisterAuthDto } from './dto/register.auth-dto';
 import { LoginAuthDto } from './dto/login.auth-dto';
+import { jwtExpiresIn, jwtSecret } from 'src/env/envoriment';
+import { IPayload } from 'src/interface/IPayload';
 @Injectable()
 export class AuthService {
   constructor(
@@ -57,10 +60,19 @@ export class AuthService {
       if (!user) {
         throw new BadRequestException('Invalid credentials');
       }
-      const payload = { email: user.email, sub: user.id, id: user.id };
+      const userRoles = user.role;
+      if (userRoles !== 'USER' && userRoles !== 'ADMIN') {
+        throw new ConflictException('Invalid user role');
+      }
+      const payload: IPayload = {
+        email: user.email,
+        id: user.id,
+        roles: user.role,
+      };
       const token = this.jwtService.sign(payload, {
-        secret: process.env.JWT_SECRET,
-        expiresIn: '1h',
+        secret: jwtSecret,
+        expiresIn: jwtExpiresIn,
+        algorithm: 'HS256',
       });
       return {
         message: 'User login successfully',
