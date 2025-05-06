@@ -32,7 +32,6 @@ export class ScoresController {
   constructor(private readonly scoresService: ScoresService) {}
 
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(['ADMIN', 'USER'])
   @ApiOperation({ summary: 'Set user score' })
   @ApiCreatedResponse({
     description: 'The record has been successfully created.',
@@ -47,7 +46,6 @@ export class ScoresController {
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(['ADMIN', 'USER'])
   @ApiOperation({ summary: 'Get top scores' })
   @ApiOkResponse({ description: 'Return all top scores' })
   @ApiNotFoundResponse({ description: 'User not found' })
@@ -59,7 +57,6 @@ export class ScoresController {
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(['ADMIN', 'USER'])
   @ApiOperation({ summary: 'Get top scores by user id' })
   @ApiOkResponse({ description: 'Return all top scores' })
   @ApiNotFoundResponse({ description: 'User not found' })
@@ -71,7 +68,6 @@ export class ScoresController {
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(['ADMIN', 'USER'])
   @ApiOperation({ summary: 'Get top scores' })
   @ApiOkResponse({ description: 'Return all top scores' })
   @ApiNotFoundResponse({ description: 'User not found' })

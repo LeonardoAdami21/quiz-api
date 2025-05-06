@@ -13,10 +13,8 @@ import { jwtSecret } from '../../env/envoriment';
 
 @Injectable()
 export class RolesGuard implements CanActivate {
-  constructor(
-    private reflector: Reflector,
-    private readonly jwtService: JwtService,
-  ) {}
+  private readonly jwtService: JwtService;
+  constructor(private readonly reflector: Reflector) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     // Verifica se a rota é pública
@@ -48,12 +46,12 @@ export class RolesGuard implements CanActivate {
       throw new UnauthorizedException('Token não fornecido');
     }
 
-    const token = authHeader.substring(7);
+    const token = authHeader.split(' ')[1];
 
     try {
       // Decodifica o token
       const payload = this.jwtService.verify(token, {
-        secret: jwtSecret,
+        secret: process.env.JWT_SECRET || jwtSecret,
       });
 
       // Adiciona o usuário ao request para uso futuro

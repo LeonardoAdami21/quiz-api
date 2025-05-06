@@ -1,4 +1,8 @@
-import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserRepository } from './prisma/user.repository';
@@ -14,17 +18,6 @@ export class UsersService {
     } catch (error) {
       throw new InternalServerErrorException(
         'An error occurred while creating the user',
-      );
-    }
-  }
-
-  async me(userId: string) {
-    try {
-      const user = await this.userRepository.findById(userId);
-      return user;
-    } catch (error) {
-      throw new InternalServerErrorException(
-        'An error occurred while retrieving the user',
       );
     }
   }
@@ -49,6 +42,17 @@ export class UsersService {
       if (!user) {
         throw new NotFoundException('User not found');
       }
+      return user;
+    } catch (error) {
+      throw new InternalServerErrorException(
+        'An error occurred while retrieving the user',
+      );
+    }
+  }
+
+  async me(userId: string) {
+    try {
+      const user = await this.userRepository.me(userId);
       return user;
     } catch (error) {
       throw new InternalServerErrorException(

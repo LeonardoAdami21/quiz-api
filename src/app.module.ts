@@ -8,14 +8,11 @@ import { QuestionsModule } from './questions/questions.module';
 import { ScoresModule } from './scores/scores.module';
 import { JwtAuthGuard } from './auth/jwt/jwt.guard';
 import { RolesGuard } from './auth/jwt/roles.guard';
+import { PassportModule } from '@nestjs/passport';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true }),
-    JwtModule.register({
-      secret: jwtSecret,
-      signOptions: { expiresIn: jwtExpiresIn },
-    }),
+    ConfigModule.forRoot({ isGlobal: true, envFilePath: '.env' }),
     UsersModule,
     AuthModule,
     QuestionsModule,

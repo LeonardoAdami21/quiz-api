@@ -102,4 +102,24 @@ export class UserRepository {
       }
     }
   }
+
+  async me(userId: string) {
+    try {
+      const user = await this.userRepository.findUnique({
+        where: { id: userId },
+      });
+      if (!user) {
+        throw new NotFoundException('User not found');
+      }
+      return user;
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw new NotFoundException('User not found');
+      } else {
+        throw new InternalServerErrorException(
+          'An error occurred while retrieving the user',
+        );
+      }
+    }
+  }
 }
